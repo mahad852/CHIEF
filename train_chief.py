@@ -83,6 +83,9 @@ def run_val():
     return val_loss/num_samples, num_correct/num_samples
 
 
+for param in model_embed.parameters():
+    param.requires_grad = False
+
 best_acc = 0
 
 for e in range(num_epochs):
@@ -91,10 +94,6 @@ for e in range(num_epochs):
 
     model.train()
     model_embed.eval()
-
-    for n, param in model_embed.named_parameters():
-        if param.requires_grad:
-            print(n)
 
     for b, (image, label) in enumerate(train_loader):
         image = image.to(device)
