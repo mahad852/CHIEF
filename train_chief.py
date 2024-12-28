@@ -124,7 +124,6 @@ for e in range(num_epochs):
     if val_acc > best_acc:
         best_acc = val_acc
         torch.save(model.state_dict(), "./model_weight/chief_lunghist700.pth")
-        torch.save(model_embed.state_dict(), "./model_weight/chief_embed_lunghist700.pth")
 
     print()
     print(f"Epoch: {e + 1} | Train Loss: {average_loss/num_batches:.4f} | Val Loss: {val_loss:.4f} | Val Accuracy: {val_acc:.4f}")
