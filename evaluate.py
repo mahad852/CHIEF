@@ -71,9 +71,6 @@ trnsfrms = get_transforms()
 val_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=False, transform=trnsfrms)
 val_loader = DataLoader(val_ds, batch_size=1)
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
-
 
 def run_inference_resnet50(image: torch.Tensor) -> torch.Tensor:
     return model(image)
@@ -198,7 +195,6 @@ for sc in sub_classes:
 
 
 def run_val():
-    val_loss = 0.0
     num_samples = 0
     num_correct = 0
 
@@ -211,7 +207,6 @@ def run_val():
         with torch.no_grad():
             image = image.to(device)
             label = label.to(device)
-            label_one_hot = F.one_hot(label, num_classes=7).type(torch.float).to(device)
 
             patch_feature_emb = model_embed(image)
 
@@ -219,8 +214,6 @@ def run_val():
 
             result = model(x, torch.tensor([tmp_z]))
 
-            val_loss += criterion(result["bag_logits"], label_one_hot).cpu().item()
-        
             num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
 
             if run_inference(image).argmax(dim=1) != result["bag_logits"].argmax(dim=1):
@@ -228,6 +221,17 @@ def run_val():
     
     print("Correct:", num_correct, "Total:", num_samples)
 
-    return val_loss/num_samples, num_correct/num_samples
+    return num_correct/num_samples
+
+model_embed = ctranspath()
+model_embed.head = nn.Identity()
+td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
+model_embed.load_state_dict(td['model'], strict=True)
+model_embed = model_embed.to(device)
+
+model = CHIEF(size_arg="small", dropout=True, n_classes=7)
+model = model.to(device)
+td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
+model.load_state_dict(td, strict=True)
 
 print(run_val())
