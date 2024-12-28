@@ -65,6 +65,7 @@ def run_val():
 
         with torch.no_grad():
             image = image.to(device)
+            label = label.to(device)
             label_one_hot = F.one_hot(label, num_classes=7).type(torch.float).to(device)
 
             patch_feature_emb = model_embed(image)

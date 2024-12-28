@@ -51,6 +51,7 @@ def run_val():
 
         with torch.no_grad():
             image = image.to(device)
+            label = label.to(device)
             label_one_hot = F.one_hot(label, num_classes=num_classes).type(torch.float).to(device)
 
             logits = model(image)
