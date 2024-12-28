@@ -78,10 +78,11 @@ def run_inference_resnet50(image: torch.Tensor) -> torch.Tensor:
 def run_inference_chief(image: torch.Tensor) -> torch.Tensor:
     anatomical = 6
 
-    patch_feature_emb = model_embed(image)
-    x, tmp_z = patch_feature_emb, anatomical
+    with torch.no_grad():
+        patch_feature_emb = model_embed(image)
+        x, tmp_z = patch_feature_emb, anatomical
 
-    result = model(x, torch.tensor([tmp_z]))
+        result = model(x, torch.tensor([tmp_z]))
     
     return result["bag_logits"]
 
@@ -116,18 +117,6 @@ if model == "chief":
 
 results_overall = []
 results_subclass = []
-
-model_embed = ctranspath()
-model_embed.head = nn.Identity()
-td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
-model_embed.load_state_dict(td['model'], strict=True)
-model_embed = model_embed.to(device)
-
-model = CHIEF(size_arg="small", dropout=True, n_classes=7)
-model = model.to(device)
-td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
-model.load_state_dict(td, strict=True)
-
 
 for _, (image, label) in enumerate(val_loader):
     with torch.no_grad():
@@ -205,7 +194,6 @@ print("Accuracy:", acc(results_subclass))
 for sc in sub_classes:
     print(f"{sc:6} | \t Precision: {precision(results_subclass, sc):0,.4f} | \t Recall: {recall(results_subclass, sc):0,.4f} | \t Total: {get_total(results_subclass, sc)}")
 
-
 def run_val():
     num_samples = 0
     num_correct = 0
@@ -234,5 +222,16 @@ def run_val():
     print("Correct:", num_correct, "Total:", num_samples)
 
     return num_correct/num_samples
+
+model_embed = ctranspath()
+model_embed.head = nn.Identity()
+td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
+model_embed.load_state_dict(td['model'], strict=True)
+model_embed = model_embed.to(device)
+
+model = CHIEF(size_arg="small", dropout=True, n_classes=7)
+model = model.to(device)
+td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
+model.load_state_dict(td, strict=True)
 
 print(run_val())
