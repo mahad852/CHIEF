@@ -222,6 +222,8 @@ def run_val():
             val_loss += criterion(result["bag_logits"], label_one_hot).cpu().item()
         
             num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
+
+            print(run_inference(image).argmax(dim=1), result["bag_logits"].argmax(dim=1))
     
     print("Correct:", num_correct, "Total:", num_samples)
 
