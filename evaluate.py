@@ -127,7 +127,7 @@ for _, (image, label) in enumerate(val_loader):
         logits = run_inference(image)
 
     preds = logits.argmax(dim = 1).cpu()
-    for i in range(logits.shape[0]):
+    for i in range(preds.shape[0]):
         p, l = preds[i].item(), label[i].cpu().item()
 
         results_overall.append((classes[l].split("_")[0], classes[p].split("_")[0]))
@@ -223,7 +223,8 @@ def run_val():
         
             num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
 
-            print(run_inference(image).argmax(dim=1), result["bag_logits"].argmax(dim=1))
+            if run_inference(image).argmax(dim=1) != result["bag_logits"].argmax(dim=1):
+                print("results not matching")
     
     print("Correct:", num_correct, "Total:", num_samples)
 
