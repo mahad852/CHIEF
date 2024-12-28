@@ -124,12 +124,12 @@ for _, (image, label) in enumerate(val_loader):
         
         logits = run_inference(image)
 
-    preds = logits.argmax(dim = 1).cpu()
-    for i in range(preds.shape[0]):
-        p, l = preds[i].item(), label[i].cpu().item()
+        preds = logits.argmax(dim = 1).cpu()
+        for i in range(preds.shape[0]):
+            p, l = preds[i].item(), label[i].cpu().item()
 
-        results_overall.append((classes[l].split("_")[0], classes[p].split("_")[0]))
-        results_subclass.append((classes[l], classes[p]))
+            results_overall.append((classes[l].split("_")[0], classes[p].split("_")[0]))
+            results_subclass.append((classes[l], classes[p]))
 
 
 def precision(results, attr):
@@ -222,16 +222,5 @@ def run_val():
     print("Correct:", num_correct, "Total:", num_samples)
 
     return num_correct/num_samples
-
-model_embed = ctranspath()
-model_embed.head = nn.Identity()
-td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
-model_embed.load_state_dict(td['model'], strict=True)
-model_embed = model_embed.to(device)
-
-model = CHIEF(size_arg="small", dropout=True, n_classes=7)
-model = model.to(device)
-td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
-model.load_state_dict(td, strict=True)
 
 print(run_val())
