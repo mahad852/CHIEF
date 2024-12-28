@@ -59,6 +59,12 @@ def get_model():
         td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
         model.load_state_dict(td, strict=True)
 
+        for param in model.parameters():
+            param.requires_grad = False
+
+        for param in model_embed.parameters():
+            param.requires_grad = False
+
         return model, model_embed
     else:
         raise NotImplementedError()
