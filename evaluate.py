@@ -117,6 +117,18 @@ if model == "chief":
 results_overall = []
 results_subclass = []
 
+model_embed = ctranspath()
+model_embed.head = nn.Identity()
+td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
+model_embed.load_state_dict(td['model'], strict=True)
+model_embed = model_embed.to(device)
+
+model = CHIEF(size_arg="small", dropout=True, n_classes=7)
+model = model.to(device)
+td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
+model.load_state_dict(td, strict=True)
+
+
 for _, (image, label) in enumerate(val_loader):
     with torch.no_grad():
         image = image.to(device)
@@ -222,16 +234,5 @@ def run_val():
     print("Correct:", num_correct, "Total:", num_samples)
 
     return num_correct/num_samples
-
-model_embed = ctranspath()
-model_embed.head = nn.Identity()
-td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
-model_embed.load_state_dict(td['model'], strict=True)
-model_embed = model_embed.to(device)
-
-model = CHIEF(size_arg="small", dropout=True, n_classes=7)
-model = model.to(device)
-td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
-model.load_state_dict(td, strict=True)
 
 print(run_val())
