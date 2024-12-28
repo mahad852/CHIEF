@@ -78,6 +78,8 @@ def run_val():
         
             num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
     
+    print("Correct:", num_correct, "Total:", num_samples)
+
     return val_loss/num_samples, num_correct/num_samples
 
 
@@ -121,7 +123,7 @@ for e in range(num_epochs):
         torch.save(model.state_dict(), "./model_weight/chief_lunghist700.pth")
 
     print()
-    print(f"Epoch: {e + 1} | Train Loss: {average_loss/num_batches} | Val Loss: {val_loss} | Val Accuracy: {val_acc}")
+    print(f"Epoch: {e + 1} | Train Loss: {average_loss/num_batches:.4f} | Val Loss: {val_loss:.4f} | Val Accuracy: {val_acc:.4f}")
    
     print("-" * 20)    
 
