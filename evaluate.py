@@ -124,32 +124,50 @@ if model == "chief":
 results_overall = []
 results_subclass = []
 
-ns = 0
-nc = 0
+def run_val():
+    num_samples = 0
+    num_correct = 0
+
+    model.eval()
+    model_embed.eval()
+
+    for _, (image, label) in enumerate(val_loader):
+        num_samples += label.shape[0]
+
+        with torch.no_grad():
+            image = image.to(device)
+            label = label.to(device)
+
+            patch_feature_emb = model_embed(image)
+
+            x,tmp_z = patch_feature_emb, 6
+
+            result = model(x, torch.tensor([tmp_z]))
+
+            num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
+
+            if run_inference(image).argmax(dim=1) != result["bag_logits"].argmax(dim=1):
+                print("results not matching")
+    
+    print("Correct:", num_correct, "Total:", num_samples)
+
+    return num_correct/num_samples
+
+print(run_val())
 
 for _, (image, label) in enumerate(val_loader):
     with torch.no_grad():
         image = image.to(device)
-        label = label.to(device)
+        
+        logits = run_inference(image)
 
-        patch_feature_emb = model_embed(image)
-
-        x,tmp_z = patch_feature_emb, 6
-
-        result = model(x, torch.tensor([tmp_z]))
-
-        preds = result["bag_logits"].argmax(dim = 1).cpu()
-
-        nc += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
-        ns += label.shape[0]
-
+        preds = logits.argmax(dim = 1).cpu()
         for i in range(preds.shape[0]):
             p, l = preds[i].item(), label[i].cpu().item()
 
             results_overall.append((classes[l].split("_")[0], classes[p].split("_")[0]))
             results_subclass.append((classes[l], classes[p]))
 
-print("ACC:", nc/ns)
 
 def precision(results, attr):
     tp, fp = 0, 0
@@ -212,34 +230,3 @@ print("*" * 5, "Subclass Stats", "*" * 5)
 print("Accuracy:", acc(results_subclass))
 for sc in sub_classes:
     print(f"{sc:6} | \t Precision: {precision(results_subclass, sc):0,.4f} | \t Recall: {recall(results_subclass, sc):0,.4f} | \t Total: {get_total(results_subclass, sc)}")
-
-def run_val():
-    num_samples = 0
-    num_correct = 0
-
-    model.eval()
-    model_embed.eval()
-
-    for _, (image, label) in enumerate(val_loader):
-        num_samples += label.shape[0]
-
-        with torch.no_grad():
-            image = image.to(device)
-            label = label.to(device)
-
-            patch_feature_emb = model_embed(image)
-
-            x,tmp_z = patch_feature_emb, 6
-
-            result = model(x, torch.tensor([tmp_z]))
-
-            num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
-
-            if run_inference(image).argmax(dim=1) != result["bag_logits"].argmax(dim=1):
-                print("results not matching")
-    
-    print("Correct:", num_correct, "Total:", num_samples)
-
-    return num_correct/num_samples
-
-print(run_val())
