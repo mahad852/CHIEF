@@ -92,6 +92,10 @@ for e in range(num_epochs):
     model.train()
     model_embed.eval()
 
+    for n, param in model_embed.named_parameters():
+        if param.requires_grad:
+            print(n)
+
     for b, (image, label) in enumerate(train_loader):
         image = image.to(device)
 
