@@ -50,7 +50,7 @@ anatomical=6
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
-num_epochs = 200
+num_epochs = 5
 
 def run_val():
     val_loss = 0.0
@@ -130,4 +130,9 @@ for e in range(num_epochs):
    
     print("-" * 20)    
 
-    # break
+
+td = torch.load("./model_weight/chief_lunghist700.pth", map_location=device)
+model = CHIEF(size_arg="small", dropout=True, n_classes=7).to(device=device)
+model.load_state_dict(td, strict=True)
+
+print(run_val())
