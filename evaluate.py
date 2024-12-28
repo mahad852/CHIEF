@@ -51,7 +51,7 @@ def get_model():
         model_embed = ctranspath()
         model_embed.head = nn.Identity()
         td = torch.load('./model_weight/chief_embed_lunghist700.pth', weights_only=True)
-        model_embed.load_state_dict(td['model'], strict=True)
+        model_embed.load_state_dict(td, strict=True)
         model_embed = model_embed.to(device)
 
         model = CHIEF(size_arg="small", dropout=True, n_classes=7)
