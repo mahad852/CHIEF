@@ -118,42 +118,11 @@ classes = {
 
 model.eval()
 
-if model == "chief":
+if model_name == "chief":
     model_embed.eval()
 
 results_overall = []
 results_subclass = []
-
-def run_val():
-    num_samples = 0
-    num_correct = 0
-
-    model.eval()
-    model_embed.eval()
-
-    for _, (image, label) in enumerate(val_loader):
-        num_samples += label.shape[0]
-
-        with torch.no_grad():
-            image = image.to(device)
-            label = label.to(device)
-
-            patch_feature_emb = model_embed(image)
-
-            x,tmp_z = patch_feature_emb, 6
-
-            result = model(x, torch.tensor([tmp_z]))
-
-            num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
-
-            if run_inference(image).argmax(dim=1) != result["bag_logits"].argmax(dim=1):
-                print("results not matching")
-    
-    print("Correct:", num_correct, "Total:", num_samples)
-
-    return num_correct/num_samples
-
-print(run_val())
 
 for _, (image, label) in enumerate(val_loader):
     with torch.no_grad():
