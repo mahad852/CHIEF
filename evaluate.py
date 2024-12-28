@@ -50,15 +50,12 @@ def get_model():
     elif model_name == "chief":
         model_embed = ctranspath()
         model_embed.head = nn.Identity()
-        td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
+        td = torch.load('./model_weight/chief_embed_lunghist700.pth', weights_only=True)
         model_embed.load_state_dict(td['model'], strict=True)
         model_embed = model_embed.to(device)
 
         model = CHIEF(size_arg="small", dropout=True, n_classes=7)
         model = model.to(device)
-        td = torch.load('./model_weight/CHIEF_finetune.pth', map_location=device, weights_only=True)
-        model.load_state_dict(td, strict=False)
-
         td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
         model.load_state_dict(td, strict=True)
 
