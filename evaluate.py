@@ -72,7 +72,7 @@ model, model_embed = get_model()
 trnsfrms = get_transforms()
 
 val_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=False, transform=trnsfrms)
-val_loader = DataLoader(val_ds, batch_size=4)
+val_loader = DataLoader(val_ds, batch_size=1)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
