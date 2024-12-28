@@ -69,7 +69,7 @@ model, model_embed = get_model()
 trnsfrms = get_transforms()
 
 val_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=False, transform=trnsfrms)
-val_loader = DataLoader(val_ds, batch_size=1)
+val_loader = DataLoader(val_ds, batch_size=4)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
@@ -126,12 +126,12 @@ for _, (image, label) in enumerate(val_loader):
         
         logits = run_inference(image)
 
-    pred = logits.argmax(dim = 1)[0].cpu().item()
-    label = label[0].cpu().item()
+    preds = logits.argmax(dim = 1).cpu()
+    for i in range(logits.shape[0]):
+        p, l = preds[i].item(), label[i].cpu().item()
 
-
-    results_overall.append((classes[label].split("_")[0], classes[pred].split("_")[0]))
-    results_subclass.append((classes[label], classes[pred]))
+        results_overall.append((classes[l].split("_")[0], classes[p].split("_")[0]))
+        results_subclass.append((classes[l], classes[p]))
 
 
 def precision(results, attr):
