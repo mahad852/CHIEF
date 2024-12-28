@@ -50,7 +50,7 @@ anatomical=6
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9)
 
-num_epochs = 5
+num_epochs = 200
 
 def run_val():
     val_loss = 0.0
