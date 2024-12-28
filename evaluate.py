@@ -68,7 +68,7 @@ def get_model():
 model, model_embed = get_model()
 trnsfrms = get_transforms()
 
-val_ds = LungHist700("/Users/mahad/Downloads/data/images", is_train=False, transform=trnsfrms)
+val_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=False, transform=trnsfrms)
 val_loader = DataLoader(val_ds, batch_size=1)
 
 criterion = nn.CrossEntropyLoss()
