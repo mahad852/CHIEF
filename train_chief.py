@@ -131,7 +131,7 @@ for e in range(num_epochs):
     print("-" * 20)    
 
 
-td = torch.load("./model_weight/chief_lunghist700.pth", map_location=device)
+td = torch.load("./model_weight/chief_lunghist700.pth", map_location=device, weights_only=True)
 model = CHIEF(size_arg="small", dropout=True, n_classes=7).to(device=device)
 model.load_state_dict(td, strict=True)
 
