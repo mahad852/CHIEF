@@ -177,6 +177,8 @@ def acc(results):
         if label == pred:
             correct += 1
     
+    print("Correct:", correct, "Total:", total)
+    
     return correct/total
 
 overall_classes = ["aca", "scc", "nor"]

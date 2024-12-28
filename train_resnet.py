@@ -60,6 +60,7 @@ def run_val():
         
             num_correct += torch.sum(label == F.softmax(logits, dim=1).argmax(dim=1))
     
+    print("Correct:", num_correct, "Total:", num_samples)
     return val_loss/num_batches, num_correct/num_samples
 
 
