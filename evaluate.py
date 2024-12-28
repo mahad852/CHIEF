@@ -127,10 +127,15 @@ results_subclass = []
 for _, (image, label) in enumerate(val_loader):
     with torch.no_grad():
         image = image.to(device)
-        
-        logits = run_inference(image)
+        label = label.to(device)
 
-        preds = logits.argmax(dim = 1).cpu()
+        patch_feature_emb = model_embed(image)
+
+        x,tmp_z = patch_feature_emb, 6
+
+        result = model(x, torch.tensor([tmp_z]))
+
+        preds = result["bag_logits"].argmax(dim = 1).cpu()
         for i in range(preds.shape[0]):
             p, l = preds[i].item(), label[i].cpu().item()
 
