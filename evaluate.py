@@ -195,3 +195,36 @@ print("*" * 5, "Subclass Stats", "*" * 5)
 print("Accuracy:", acc(results_subclass))
 for sc in sub_classes:
     print(f"{sc:6} | \t Precision: {precision(results_subclass, sc):0,.4f} | \t Recall: {recall(results_subclass, sc):0,.4f} | \t Total: {get_total(results_subclass, sc)}")
+
+
+def run_val():
+    val_loss = 0.0
+    num_samples = 0
+    num_correct = 0
+
+    model.eval()
+    model_embed.eval()
+
+    for _, (image, label) in enumerate(val_loader):
+        num_samples += label.shape[0]
+
+        with torch.no_grad():
+            image = image.to(device)
+            label = label.to(device)
+            label_one_hot = F.one_hot(label, num_classes=7).type(torch.float).to(device)
+
+            patch_feature_emb = model_embed(image)
+
+            x,tmp_z = patch_feature_emb, 6
+
+            result = model(x, torch.tensor([tmp_z]))
+
+            val_loss += criterion(result["bag_logits"], label_one_hot).cpu().item()
+        
+            num_correct += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
+    
+    print("Correct:", num_correct, "Total:", num_samples)
+
+    return val_loss/num_samples, num_correct/num_samples
+
+print(run_val())
