@@ -56,6 +56,9 @@ def get_model():
 
         model = CHIEF(size_arg="small", dropout=True, n_classes=7)
         model = model.to(device)
+        td = torch.load('./model_weight/CHIEF_finetune.pth', map_location=device, weights_only=True)
+        model.load_state_dict(td, strict=False)
+
         td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
         model.load_state_dict(td, strict=True)
 
