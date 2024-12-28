@@ -24,10 +24,10 @@ trnsfrms_val = transforms.Compose(
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-train_ds = LungHist700("/Users/mahad/Downloads/data/images", is_train=True, transform=trnsfrms_val)
+train_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=True, transform=trnsfrms_val)
 train_loader = DataLoader(train_ds, batch_size=1)
 
-val_ds = LungHist700("/Users/mahad/Downloads/data/images", is_train=False, transform=trnsfrms_val)
+val_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=False, transform=trnsfrms_val)
 val_loader = DataLoader(val_ds, batch_size=1)
 
 model_embed = ctranspath()

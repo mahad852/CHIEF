@@ -19,10 +19,10 @@ num_classes = 7
 trnsfrms_val = ResNet50_Weights.DEFAULT.transforms()
 
 
-train_ds = LungHist700("/Users/mahad/Downloads/data/images", is_train=True, transform=trnsfrms_val)
+train_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=True, transform=trnsfrms_val)
 train_loader = DataLoader(train_ds, batch_size=4)
 
-val_ds = LungHist700("/Users/mahad/Downloads/data/images", is_train=False, transform=trnsfrms_val)
+val_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=False, transform=trnsfrms_val)
 val_loader = DataLoader(val_ds, batch_size=4)
 
 td = torch.load("./model_weight/resnet50-11ad3fa6.pth", map_location=device, weights_only=True)
