@@ -85,7 +85,7 @@ class CHIEF(nn.Module):
         super(CHIEF, self).__init__()
         self.size_dict = {'xs': [384, 256, 256], "small": [768, 512, 256], "big": [1024, 512, 384], 'large': [2048, 1024, 512]}
         size = self.size_dict[size_arg]
-        print(size)
+        # print(size)
         fc = [nn.Linear(size[0], size[1]), nn.ReLU()]
         if dropout:
             fc.append(nn.Dropout(0.25))
@@ -106,7 +106,7 @@ class CHIEF(nn.Module):
         self.text_to_vision=nn.Sequential(nn.Linear(768, size[1]), nn.ReLU(), nn.Dropout(p=0.25))
 
         self.register_buffer('organ_embedding', torch.randn(19, 768))
-        word_embedding = torch.load(r'./model_weight/Text_emdding.pth')
+        word_embedding = torch.load(r'./model_weight/Text_emdding.pth', weights_only=True)
         self.organ_embedding.data = word_embedding.float()
         self.text_to_vision=nn.Sequential(nn.Linear(768, size[1]), nn.ReLU(), nn.Dropout(p=0.25))
 
