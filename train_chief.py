@@ -89,7 +89,7 @@ for e in range(num_epochs):
     average_loss = 0.0
     num_batches = len(train_ds)
 
-    model.eval()
+    model.train()
     model_embed.eval()
 
     for b, (image, label) in enumerate(train_loader):
