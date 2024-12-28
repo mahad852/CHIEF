@@ -124,6 +124,9 @@ if model == "chief":
 results_overall = []
 results_subclass = []
 
+ns = 0
+nc = 0
+
 for _, (image, label) in enumerate(val_loader):
     with torch.no_grad():
         image = image.to(device)
@@ -136,12 +139,17 @@ for _, (image, label) in enumerate(val_loader):
         result = model(x, torch.tensor([tmp_z]))
 
         preds = result["bag_logits"].argmax(dim = 1).cpu()
+
+        nc += torch.sum(label == F.softmax(result["bag_logits"], dim=1).argmax(dim=1))
+        ns += label.shape[0]
+
         for i in range(preds.shape[0]):
             p, l = preds[i].item(), label[i].cpu().item()
 
             results_overall.append((classes[l].split("_")[0], classes[p].split("_")[0]))
             results_subclass.append((classes[l], classes[p]))
 
+print("ACC:", nc/ns)
 
 def precision(results, attr):
     tp, fp = 0, 0
