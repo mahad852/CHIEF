@@ -38,7 +38,7 @@ model_embed.load_state_dict(td['model'], strict=True)
 
 model_embed = model_embed.to(device)
 
-model = CHIEF(size_arg="small", dropout=False, n_classes=7)
+model = CHIEF(size_arg="small", dropout=True, n_classes=7)
 model = model.to(device)
 
 td = torch.load('./model_weight/CHIEF_finetune.pth', map_location=device, weights_only=True)
@@ -131,16 +131,15 @@ for e in range(num_epochs):
     print("-" * 20)    
 
 
-td = torch.load("./model_weight/chief_lunghist700.pth", map_location=device, weights_only=True)
-model = CHIEF(size_arg="small", dropout=True, n_classes=7).to(device=device)
-model.load_state_dict(td, strict=True)
-
 model_embed = ctranspath()
 model_embed.head = nn.Identity()
-
 td = torch.load('./model_weight/CHIEF_CTransPath.pth', weights_only=True)
 model_embed.load_state_dict(td['model'], strict=True)
-
 model_embed = model_embed.to(device)
+
+model = CHIEF(size_arg="small", dropout=True, n_classes=7)
+model = model.to(device)
+td = torch.load('./model_weight/chief_lunghist700.pth', map_location=device, weights_only=True)
+model.load_state_dict(td, strict=True)
 
 print(run_val())
