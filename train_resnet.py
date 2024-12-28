@@ -101,8 +101,6 @@ for e in range(num_epochs):
         torch.save(model.state_dict(), "./model_weight/resnet50_lunghist700.pth")
 
     print()
-    print(f"Epoch: {e + 1} | Train Loss: {average_loss/num_batches} | Val Loss: {val_loss} | Val Accuracy: {val_acc}")
+    print(f"Epoch: {e + 1} | Train Loss: {average_loss/num_batches:.4f} | Val Loss: {val_loss:.4f} | Val Accuracy: {val_acc:.4f}")
    
     print("-" * 20)    
-
-    # break

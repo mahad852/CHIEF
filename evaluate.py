@@ -180,22 +180,20 @@ def acc(results):
     for (label, pred) in results:
         if label == pred:
             correct += 1
-    
-    print("Correct:", correct, "Total:", total)
-    
+        
     return correct/total
 
 overall_classes = ["aca", "scc", "nor"]
 sub_classes = ["aca_bd", "aca_md", "aca_pd", "nor", "scc_bd", "scc_md", "scc_pd"]
 
 print("*" * 5, "Overall Stats", "*" * 5)
-print("Accuracy:", acc(results_overall))
+print(f"Accuracy: {acc(results_overall):.4f}")
 for oc in overall_classes:
     print(f"{oc:6} | \t Precision: {precision(results_overall, oc):0,.4f} | \t Recall: {recall(results_overall, oc):0,.4f} | \t Total: {get_total(results_overall, oc)}")
 
 print("-" * 30)
 
 print("*" * 5, "Subclass Stats", "*" * 5)
-print("Accuracy:", acc(results_subclass))
+print(f"Accuracy: {acc(results_subclass):.4f}")
 for sc in sub_classes:
     print(f"{sc:6} | \t Precision: {precision(results_subclass, sc):0,.4f} | \t Recall: {recall(results_subclass, sc):0,.4f} | \t Total: {get_total(results_subclass, sc)}")
