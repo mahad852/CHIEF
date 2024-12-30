@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 import torch.optim as optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from torchvision.models.resnet import resnet50, ResNet50_Weights
+from torchvision.models.resnet import resnet50, ResNet50_Weights, resnet18, ResNet18_Weights
 
 from PIL import Image
 
@@ -17,7 +17,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 num_classes = 7
 
-trnsfrms_val = ResNet50_Weights.DEFAULT.transforms()
+trnsfrms_val = ResNet18_Weights.DEFAULT.transforms()
 
 
 train_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=True, transform=trnsfrms_val)
@@ -29,12 +29,12 @@ val_loader = DataLoader(val_ds, batch_size=4)
 # td = torch.load("./model_weight/resnet50-11ad3fa6.pth", map_location=device, weights_only=True)
 # td = {k: v for k, v in td.items() if not k.startswith('fc.')}
 
-model = resnet50(num_classes = num_classes).to(device)
+model = resnet18(num_classes = num_classes).to(device)
 
 # model.load_state_dict(td, strict=False)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
+optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=1e-4)
 scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=3, factor=0.5)
 
 num_epochs = 200
