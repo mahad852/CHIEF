@@ -66,7 +66,7 @@ def run_val():
 
 
 for name, param in model.named_parameters():
-    if name.startswith("bn."):
+    if not name.startswith("bn.") and not name.startswith("fc."):
         param.requires_grad = False
 
 best_acc = 0
