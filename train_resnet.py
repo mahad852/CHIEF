@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import torch.optim as optim
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from torchvision.models.resnet import resnet50, ResNet50_Weights
 
@@ -33,7 +34,8 @@ model = resnet50(num_classes = num_classes).to(device)
 model.load_state_dict(td, strict=False)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.9, weight_decay=1e-5)
+optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
+scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=3, factor=0.5)
 
 num_epochs = 200
 
@@ -95,6 +97,7 @@ for e in range(num_epochs):
             print(f"Epoch: {e + 1}, Batch: {num_batches} | Loss: {average_loss/num_batches}")
 
     val_loss, val_acc = run_val()
+    scheduler.step(val_loss)
     
     if val_acc > best_acc:
         best_acc = val_acc
