@@ -26,12 +26,12 @@ train_loader = DataLoader(train_ds, batch_size=4)
 val_ds = LungHist700("/home/mali2/datasets/LungHist700/data/images", is_train=False, transform=trnsfrms_val)
 val_loader = DataLoader(val_ds, batch_size=4)
 
-td = torch.load("./model_weight/resnet50-11ad3fa6.pth", map_location=device, weights_only=True)
-td = {k: v for k, v in td.items() if not k.startswith('fc.')}
+# td = torch.load("./model_weight/resnet50-11ad3fa6.pth", map_location=device, weights_only=True)
+# td = {k: v for k, v in td.items() if not k.startswith('fc.')}
 
 model = resnet50(num_classes = num_classes).to(device)
 
-model.load_state_dict(td, strict=False)
+# model.load_state_dict(td, strict=False)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
@@ -65,9 +65,9 @@ def run_val():
     return val_loss/num_batches, num_correct/num_samples
 
 
-for name, param in model.named_parameters():
-    if not name.startswith("bn.") and not name.startswith("fc."):
-        param.requires_grad = False
+# for name, param in model.named_parameters():
+#     if not name.startswith("bn.") and not name.startswith("fc."):
+#         param.requires_grad = False
 
 best_acc = 0
 
