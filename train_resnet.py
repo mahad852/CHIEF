@@ -33,7 +33,7 @@ model = resnet50(num_classes = num_classes).to(device)
 model.load_state_dict(td, strict=False)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.001)
+optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-5)
 
 num_epochs = 200
 
